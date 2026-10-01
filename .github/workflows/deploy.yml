@@ -1,4 +1,4 @@
-name: Terraform Deploy
+name: Terraform Destroy
 
 on:
   push:
@@ -16,19 +16,17 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
 
-      # 🔑 AWS Credentials Step (Yeh naya add kiya hai)
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1 # ⚠️ Agar aapka region alag hai (jaise ap-south-1), toh yahan change kar lein
+          aws-region: us-east-1 # (Apna region check kar lein)
 
       - name: Init
         run: terraform init
 
-      - name: Plan
-        run: terraform plan
+      # 👇 Yeh step sab kuch ek hi baar mein delete kar dega
+      - name: Destroy All Resources
+        run: terraform destroy -auto-approve
 
-      - name: Apply
-        run: terraform apply -auto-approve
