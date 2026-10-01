@@ -46,8 +46,8 @@ resource "aws_security_group" "sg" {
 
 # EC2 Instance
 resource "aws_instance" "server" {
-  ami           = "ami-0f58b397bc5c1f2e8"
-  instance_type = "t2.micro"
+  ami           = "ami-006f82a1d5a27da54"
+  instance_type = "t3.small"
   subnet_id     = aws_subnet.public.id
   vpc_security_group_ids = [aws_security_group.sg.id]
   associate_public_ip_address = true
