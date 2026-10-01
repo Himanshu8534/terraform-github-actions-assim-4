@@ -1,9 +1,17 @@
-name: Terraform Destroy
+name: Terraform Infra Manager
 
+# 🛑 'on: push' hata kar sirf 'workflow_dispatch' lagaya hai
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
+    inputs:
+      action:
+        description: "Choose Action"
+        required: true
+        default: "apply"
+        type: choice
+        options:
+          - apply
+          - destroy
 
 jobs:
   terraform:
@@ -26,7 +34,14 @@ jobs:
       - name: Init
         run: terraform init
 
-      # 👇 Yeh step sab kuch ek hi baar mein delete kar dega
-      - name: Destroy All Resources
-        run: terraform destroy -auto-approve
+      # 👇 Jo option aap choose karenge (apply ya destroy), sirf wahi chalega
+      - name: Run Terraform
+        run: |
+          if [ "${{ github.event.inputs.action }}" = "destroy" ]; then
+            echo "Running Terraform Destroy..."
+            terraform destroy -auto-approve
+          else
+            echo "Running Terraform Apply..."
+            terraform apply -auto-approve
+          fi
 
